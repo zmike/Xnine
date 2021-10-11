@@ -231,132 +231,126 @@ typedef struct IDirect3DVertexDeclaration9_Minor1 {
 #define SWAPCHAIN_WRAP0(ret, func)  \
     ret ALT_WINAPI NineSwapChain9_ ## func(IDirect3DSwapChain9Ex *This) \
     { \
-     printf("%s\n", __func__); \
         return ((IDirect3DSwapChain9Ex_Minor1 *)This)->lpVtbl_internal->func(This); \
     }
 
 #define SWAPCHAIN_WRAP1(ret, func, type1)  \
     ret ALT_WINAPI NineSwapChain9_ ## func(IDirect3DSwapChain9Ex *This, type1 arg1) \
     { \
-     printf("%s\n", __func__); \
         return ((IDirect3DSwapChain9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1); \
     }
 
 #define SWAPCHAIN_WRAP2(ret, func, type1, type2)  \
     ret ALT_WINAPI NineSwapChain9_ ## func(IDirect3DSwapChain9Ex *This, type1 arg1, type2 arg2) \
     { \
-     printf("%s\n", __func__); \
         return ((IDirect3DSwapChain9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2); \
     }
 
 #define SWAPCHAIN_WRAP3(ret, func, type1, type2, type3)  \
     ret ALT_WINAPI NineSwapChain9_ ## func(IDirect3DSwapChain9Ex *This, type1 arg1, type2 arg2, type3 arg3) \
     { \
-     printf("%s\n", __func__); \
         return ((IDirect3DSwapChain9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2, arg3); \
     }
 
 #define SWAPCHAIN_H_WRAP5(ret, func, type1, type2, type3, type4, type5)  \
     ret ALT_WINAPI ALT_DECLSPEC_HOTPATCH NineSwapChain9_ ## func(IDirect3DSwapChain9Ex *This, type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5) \
     { \
-     printf("%s\n", __func__); \
         return ((IDirect3DSwapChain9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2, arg3, arg4, arg5); \
     }
 
 #define DEVICE_WRAP0(ret, func)  \
     ret ALT_WINAPI NineDevice9_ ## func(IDirect3DDevice9Ex *This) \
     { \
-     printf("%s\n", __func__); \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This); \
     }
 
 #define DEVICE_WRAP1(ret, func, type1)  \
     ret ALT_WINAPI NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1); \
     }
 
 #define DEVICE_WRAP2(ret, func, type1, type2)  \
     ret ALT_WINAPI NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1, type2 arg2) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2); \
     }
 
 #define DEVICE_WRAP3(ret, func, type1, type2, type3)  \
     ret ALT_WINAPI NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1, type2 arg2, type3 arg3) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2, arg3); \
     }
 
 #define DEVICE_WRAP4(ret, func, type1, type2, type3, type4)  \
     ret ALT_WINAPI NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1, type2 arg2, type3 arg3, type4 arg4) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2, arg3, arg4); \
     }
 
 #define DEVICE_WRAP5(ret, func, type1, type2, type3, type4, type5)  \
     ret ALT_WINAPI NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2, arg3, arg4, arg5); \
     }
 
 #define DEVICE_WRAP6(ret, func, type1, type2, type3, type4, type5, type6)  \
     ret ALT_WINAPI NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2, arg3, arg4, arg5, arg6); \
     }
 
 #define DEVICE_WRAP7(ret, func, type1, type2, type3, type4, type5, type6, type7)  \
     ret ALT_WINAPI NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2, arg3, arg4, arg5, arg6, arg7); \
     }
 
 #define DEVICE_WRAP8(ret, func, type1, type2, type3, type4, type5, type6, type7, type8)  \
     ret ALT_WINAPI NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); \
     }
 
 #define DEVICE_WRAP9(ret, func, type1, type2, type3, type4, type5, type6, type7, type8, type9)  \
     ret ALT_WINAPI NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9); \
     }
 
 #define DEVICE_H_WRAP0(ret, func)  \
     ret ALT_WINAPI ALT_DECLSPEC_HOTPATCH NineDevice9_ ## func(IDirect3DDevice9Ex *This) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This); \
     }
 
 #define DEVICE_H_WRAP1(ret, func, type1)  \
     ret ALT_WINAPI ALT_DECLSPEC_HOTPATCH NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1); \
     }
 
 #define DEVICE_H_WRAP2(ret, func, type1, type2)  \
     ret ALT_WINAPI ALT_DECLSPEC_HOTPATCH NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1, type2 arg2) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2); \
     }
 
 #define DEVICE_H_WRAP3(ret, func, type1, type2, type3)  \
     ret ALT_WINAPI ALT_DECLSPEC_HOTPATCH NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1, type2 arg2, type3 arg3) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2, arg3); \
     }
 
 #define DEVICE_H_WRAP4(ret, func, type1, type2, type3, type4)  \
     ret ALT_WINAPI ALT_DECLSPEC_HOTPATCH NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1, type2 arg2, type3 arg3, type4 arg4) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2, arg3, arg4); \
     }
 
 #define DEVICE_H_WRAP5(ret, func, type1, type2, type3, type4, type5)  \
     ret ALT_WINAPI ALT_DECLSPEC_HOTPATCH NineDevice9_ ## func(IDirect3DDevice9Ex *This, type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5) \
-    { printf("%s\n", __func__); \
+    { \
         return ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->func(This, arg1, arg2, arg3, arg4, arg5); \
     }
 
@@ -485,7 +479,6 @@ NineDevice9_GetDirect3D(struct NineDevice9 *This,
                          IDirect3D9 **ppD3D9)
 {
     void **vtable_mirror;
-    printf("NineDevice9_GetDirect3D\n");
     HRESULT hr = ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->GetDirect3D(This, &vtable_mirror);
     /* ppD3D9 is the IDirect3D9 version. Let's get the _alt */
     ppD3D9 = (void*)(vtable_mirror-1);
@@ -729,7 +722,6 @@ static IDirect3DVertexDeclaration9Vtbl NineVertexDeclaration9_vtable = {
 static HRESULT ALT_WINAPI ALT_DECLSPEC_HOTPATCH NineDevice9_CreateVertexDeclaration(IDirect3DDevice9Ex *This, const D3DVERTEXELEMENT9 *pVertexElements, IDirect3DVertexDeclaration9 **ppDecl)
 {
     HRESULT hr;
-printf("WRAPPED NineDevice9_CreateVertexDeclaration");
     hr = ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->CreateVertexDeclaration(This, pVertexElements, ppDecl);
     if (FAILED(hr))
         return hr;
