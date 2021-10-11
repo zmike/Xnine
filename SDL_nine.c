@@ -1235,9 +1235,35 @@ d3dadapter9_new( BOOL ex, Display *dpy,
         }
 
 
-        void * handle = dlopen(D3DADAPTERPATH, RTLD_LOCAL | RTLD_NOW);
+        void * handle = NULL;
+
+        const char *path = getenv("D3D_MODULE_PATH");
+        if (path) {
+           /* extremely basic path parsing attempt */
+           const char *dot = strrchr(path, '.');
+           if (dot) {
+              if (!strcmp(dot, ".so")) {
+                 handle = dlopen(path, RTLD_LOCAL | RTLD_NOW);
+                 if (!handle)
+                    ERR("Failed to load d3d9 lib '%s': %s\n", path, dlerror());
+              }
+           } else {
+              char str[4096];
+              snprintf(str, sizeof(str), "%s/d3dadapter9.so", path);
+              handle = dlopen(str, RTLD_LOCAL | RTLD_NOW);
+                 ERR("Failed to load d3d9 lib '%s': %s\n", str, dlerror());
+           }
+        } else {
+           const char *paths[] = {
+              "/usr/lib32/d3d/d3dadapter9.so",
+              "/usr/lib/d3d/d3dadapter9.so",
+           };
+           for (unsigned i = 0; !handle && i < 2; i++)
+              handle = dlopen(paths[i], RTLD_LOCAL | RTLD_NOW);
+           if (!handle)
+              ERR("Failed to load d3d9 lib: %s\n", dlerror());
+        }
         if (!handle) {
-            ERR("Failed to load d3d9 lib: %s\n", dlerror());
             return D3DERR_NOTAVAILABLE;
         }
 
