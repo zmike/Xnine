@@ -719,10 +719,42 @@ static IDirect3DVertexDeclaration9Vtbl NineVertexDeclaration9_vtable = {
     (void *)NineVertexDeclaration9_GetDeclaration
 };
 
+typedef struct _D3DVERTEXELEMENT9_HACK {
+    WORD Stream;
+    WORD pad;
+    WORD Offset;
+    WORD pad2;
+    BYTE Type;
+    BYTE Method;
+    BYTE Usage;
+    BYTE UsageIndex;
+} D3DVERTEXELEMENT9_HACK;
+
 static HRESULT ALT_WINAPI ALT_DECLSPEC_HOTPATCH NineDevice9_CreateVertexDeclaration(IDirect3DDevice9Ex *This, const D3DVERTEXELEMENT9 *pVertexElements, IDirect3DVertexDeclaration9 **ppDecl)
 {
     HRESULT hr;
-    hr = ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->CreateVertexDeclaration(This, pVertexElements, ppDecl);
+
+    if (getenv("NINE_VHACKS")) {
+       unsigned count = 0;
+       D3DVERTEXELEMENT9 *hack;
+       const D3DVERTEXELEMENT9_HACK *orig = (const D3DVERTEXELEMENT9_HACK *)pVertexElements;
+       for (; orig[count].Stream != 0xff; count++);
+       count++;
+       hack = malloc(sizeof(D3DVERTEXELEMENT9) * count);
+       if (!hack)
+          return -1;
+       for (unsigned i = 0; i < count; i++) {
+          hack[i].Stream = orig[i].Stream;
+          hack[i].Offset = orig[i].Offset;
+          hack[i].Type = orig[i].Type;
+          hack[i].Method = orig[i].Method;
+          hack[i].Usage = orig[i].Usage;
+          hack[i].UsageIndex = orig[i].UsageIndex;
+       }
+       hr = ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->CreateVertexDeclaration(This, hack, ppDecl);
+       free(hack);
+    } else
+       hr = ((IDirect3DDevice9Ex_Minor1 *)This)->lpVtbl_internal->CreateVertexDeclaration(This, pVertexElements, ppDecl);
     if (FAILED(hr))
         return hr;
 
