@@ -1,6 +1,8 @@
 Xnine is a library under MIT Licence designed to be a demo of the Gallium Nine API, without requiring wine.
 
-To run with any DXVK-compatible (Vulkan-supporting) Source engine game, use a steam command line of `LD_PRELOAD=/path/to/nine_sdl.so %command% -vulkan`.
+To run with any 32bit DXVK-compatible (Vulkan-supporting) Source engine game, use a steam command line of `LD_PRELOAD=/path/to/nine_sdl.so %command% -vulkan`.
+
+Use nine_sdl64.so for 64bit titles (CS:GO).
 
 For Portal 2 (as of November 2021), add `NINE_VHACKS=1`.
 
