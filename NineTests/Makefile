@@ -1,12 +1,12 @@
 
-D3DADAPTER9_LOCATION="/usr/lib/d3d/d3dadapter9.so"
+D3DADAPTER9_LOCATION="/usr/local/lib64/d3d/d3dadapter9.so"
 CC=gcc -g
 CXX=g++ -g
 
 # 32 bits
-D3DADAPTER9_LOCATION="/usr/lib32/d3d/d3dadapter9.so"
-CC=gcc -g -m32
-CXX=g++ -g -m32
+#D3DADAPTER9_LOCATION="/usr/lib32/d3d/d3dadapter9.so"
+#CC=gcc -g -m32
+#CXX=g++ -g -m32
 
 D3DADAPTER9_WITHDRI2=1
 
