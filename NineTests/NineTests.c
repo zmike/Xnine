@@ -39,9 +39,9 @@
 
 #define broken(x) 0
 #ifdef PRINT_SUCCESS
-#define ok(c, ...) {{if (!(c)) fprintf(stderr, "FAIL(%u): ", __LINE__); else fprintf(stderr, "succ: "); fprintf(stderr, __VA_ARGS__);}}
+#define ok(c, ...) {{if (!(c)) fprintf(stderr, "FAIL(%s:%u): ", __FUNCTION__, __LINE__); else fprintf(stderr, "succ: "); fprintf(stderr, __VA_ARGS__);}}
 #else
-#define ok(c, ...) {{if (!(c)) {fprintf(stderr, "FAIL(%u): ", __LINE__);fprintf(stderr, __VA_ARGS__);}}}
+#define ok(c, ...) {{if (!(c)) {fprintf(stderr, "FAIL(%s:%u): ", __FUNCTION__, __LINE__);fprintf(stderr, __VA_ARGS__);}}}
 #endif
 #define skip(...) {fprintf(stderr, "skip(%u): ", __LINE__); fprintf(stderr, __VA_ARGS__);}
 #define win_skip(...) {fprintf(stderr, "skip(%u): ", __LINE__); fprintf(stderr, __VA_ARGS__);}
