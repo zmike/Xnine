@@ -296,7 +296,7 @@ DRI3Open(Display *dpy, int screen, int *device_fd)
     xcb_dri3_open_cookie_t cookie;
     xcb_dri3_open_reply_t *reply;
     xcb_connection_t *xcb_connection = XGetXCBConnection(dpy);
-    int fd;
+    int fd = -1;
     Window root = RootWindow(dpy, screen);
 
     cookie = xcb_dri3_open(xcb_connection, root, 0);

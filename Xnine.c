@@ -465,6 +465,61 @@ Xnine_GetWindowInfo(struct D3DPresent_Xnine *This, HWND hWnd,
     return D3D_OK;
 }
 
+static BOOL WINAPI
+Xnine_GetWindowOccluded(struct D3DPresent_Xnine *This)
+{
+    return FALSE;
+}
+
+static BOOL WINAPI
+Xnine_ResolutionMismatch(struct D3DPresent_Xnine *This)
+{
+    return FALSE;
+}
+
+static HANDLE WINAPI
+Xnine_CreateThread(struct D3DPresent_Xnine *This, void *pThreadfunc, void *pParam)
+{
+    return NULL;
+}
+
+static BOOL WINAPI
+Xnine_WaitForThread(struct D3DPresent_Xnine *This, HANDLE thread)
+{
+    return TRUE;
+}
+
+static HRESULT WINAPI
+Xnine_SetPresentParameters2(struct D3DPresent_Xnine *This, D3DPRESENT_PARAMETERS2 *pParameters)
+{
+    return D3D_OK;
+}
+
+static BOOL WINAPI
+Xnine_IsBufferReleased(struct D3DPresent_Xnine *This, D3DWindowBuffer *buffer)
+{
+    return TRUE;
+}
+
+static HRESULT WINAPI
+Xnine_WaitBufferReleaseEvent(struct D3DPresent_Xnine *This)
+{
+    return D3D_OK;
+}
+
+static HRESULT WINAPI
+Xnine_GetWindowHWND(struct D3DPresent_Xnine *This, HWND hWnd, void **pDisplay, void **pWindow, int *type)
+{
+    struct Xnine_window *window;
+
+    window = find_window(This->priv, hWnd);
+    if (!window)
+        return D3DERR_DRIVERINTERNALERROR;
+    *pWindow = (uintptr_t*)window->Xwindow;
+    *pDisplay = XGetXCBConnection(This->priv->dpy);
+    return D3D_OK;
+}
+
 static ID3DPresentVtbl Xnine_vtable = {
     (void *)Xnine_QueryInterface,
     (void *)Xnine_AddRef,
@@ -482,7 +537,15 @@ static ID3DPresentVtbl Xnine_vtable = {
     (void *)Xnine_SetCursorPos,
     (void *)Xnine_SetCursor,
     (void *)Xnine_SetGammaRamp,
-    (void *)Xnine_GetWindowInfo
+    (void *)Xnine_GetWindowInfo,
+    (void *)Xnine_GetWindowOccluded,
+    (void *)Xnine_ResolutionMismatch,
+    (void *)Xnine_CreateThread,
+    (void *)Xnine_WaitForThread,
+    (void *)Xnine_SetPresentParameters2,
+    (void *)Xnine_IsBufferReleased,
+    (void *)Xnine_WaitBufferReleaseEvent,
+    (void *)Xnine_GetWindowHWND,
 };
 
 
@@ -589,7 +652,7 @@ XnineGroup_GetVersion(struct D3DPresentGroup_Xnine *This,
                       int *major, int *minor)
 {
     *major = 1;
-    *minor = 0;
+    *minor = 5;
 }
 
 static ID3DPresentGroupVtbl XnineGroup_vtable = {
@@ -978,25 +1041,29 @@ static IDirect3D9ExVtbl XnineD3d9_vtable = {
 
 ID3DAdapter9 *create_adapter9(struct Xnine_private *priv)
 {
-    int fd;
+    int fd = -1;
     ID3DAdapter9 *out;
+    BOOL dri3_fail = FALSE;
+    BOOL dri2_fail = FALSE;
 
 #if D3DADAPTER9_WITHDRI2
     if (!priv->is_dri2_fallback && !DRI3Open(priv->dpy, DefaultScreen(priv->dpy), &fd)) {
 #else
     if (!DRI3Open(priv->dpy, DefaultScreen(priv->dpy), &fd)) {
 #endif
-        fprintf(stderr, "Failed to use DRI3\n");
-        return NULL;
+        dri3_fail = TRUE;
     }
 #if D3DADAPTER9_WITHDRI2
     if (priv->is_dri2_fallback && !DRI2FallbackOpen(priv->dpy, DefaultScreen(priv->dpy), &fd)) {
-        fprintf(stderr, "Failed to use DRI2\n");
-        return NULL;
+        dri2_fail = TRUE;
     }
 #endif
 
     if (priv->d3d9_drm->create_adapter(fd, &out) != D3D_OK) {
+        if (dri3_fail)
+            fprintf(stderr, "Failed to use DRI3\n");
+        else if (dri2_fail)
+            fprintf(stderr, "Failed to use DRI2\n");
         fprintf(stderr, "Failed to load the driver\n");
         return NULL;
     }
@@ -1054,13 +1121,12 @@ BOOL Xnine_init(int screen_num, struct Xnine_private **priv)
     if (!DRI3CheckExtension(dpy, 1, 0)) {
 #if !D3DADAPTER9_WITHDRI2
         fprintf(stderr, "Requirements not met: no DRI3\n");
-        return FALSE;
 #else
         fprintf(stderr, "Unable to query DRI3. Trying DRI2 fallback (slower performance).\n");
         is_dri2_fallback = 1;
         if (!DRI2FallbackCheckSupport(dpy)) {
             fprintf(stderr, "Requirements not met: no DRI3 nor DRI2 fallback\n");
-            return FALSE;
+            is_dri2_fallback = 0;
         }
 #endif
     }

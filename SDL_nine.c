@@ -453,6 +453,57 @@ DRI3Present_GetWindowInfo( struct DRI3Present *This,
     return D3D_OK;
 }
 
+static BOOL WINAPI
+DRI3Present_GetWindowOccluded(struct DRI3Present *This)
+{
+    return FALSE;
+}
+
+static BOOL WINAPI
+DRI3Present_ResolutionMismatch(struct DRI3Present *This)
+{
+    return FALSE;
+}
+
+static HANDLE WINAPI
+DRI3Present_CreateThread(struct DRI3Present *This, void *pThreadfunc, void *pParam)
+{
+    return NULL;
+}
+
+static BOOL WINAPI
+DRI3Present_WaitForThread(struct DRI3Present *This, HANDLE thread)
+{
+    return TRUE;
+}
+
+static HRESULT WINAPI
+DRI3Present_SetPresentParameters2(struct DRI3Present *This, D3DPRESENT_PARAMETERS2 *pParameters)
+{
+    return D3D_OK;
+}
+
+static BOOL WINAPI
+DRI3Present_IsBufferReleased(struct DRI3Present *This, D3DWindowBuffer *buffer)
+{
+    return TRUE;
+}
+
+static HRESULT WINAPI
+DRI3Present_WaitBufferReleaseEvent(struct DRI3Present *This)
+{
+    return D3D_OK;
+}
+
+static HRESULT WINAPI
+DRI3Present_GetWindowHWND(struct DRI3Present *This, HWND hWnd, void **pDisplay, void **pWindow, int *type)
+{
+    struct DRI3Present_window *window;
+
+    *pWindow = (uintptr_t*)This->x11_window;
+    *pDisplay = XGetXCBConnection(This->x11_display);
+    return D3D_OK;
+}
 /*----------*/
 
 
@@ -473,7 +524,15 @@ static ID3DPresentVtbl DRI3Present_vtable = {
     (void *)DRI3Present_SetCursorPos,
     (void *)DRI3Present_SetCursor,
     (void *)DRI3Present_SetGammaRamp,
-    (void *)DRI3Present_GetWindowInfo
+    (void *)DRI3Present_GetWindowInfo,
+    (void *)DRI3Present_GetWindowOccluded,
+    (void *)DRI3Present_ResolutionMismatch,
+    (void *)DRI3Present_CreateThread,
+    (void *)DRI3Present_WaitForThread,
+    (void *)DRI3Present_SetPresentParameters2,
+    (void *)DRI3Present_IsBufferReleased,
+    (void *)DRI3Present_WaitBufferReleaseEvent,
+    (void *)DRI3Present_GetWindowHWND,
 };
 
 static void
@@ -633,7 +692,7 @@ DRI3PresentGroup_GetVersion( struct DRI3PresentGroup *This,
                              int *minor)
 {
     *major = 1;
-    *minor = 0;
+    *minor = 5;
 }
 
 static ID3DPresentGroupVtbl DRI3PresentGroup_vtable = {
@@ -1164,19 +1223,17 @@ d3dadapter9_new( BOOL ex, Display *dpy,
 
         if (!PRESENTCheckExtension(dpy, 1, 0)) {
             ERR("Unable to query PRESENT.\n");
-            return D3DERR_NOTAVAILABLE;
         }
 
         if (!DRI3CheckExtension(dpy, 1, 0)) {
 #if !D3DADAPTER9_WITHDRI2
             ERR("Unable to query DRI3.\n");
-            return D3DERR_NOTAVAILABLE;
 #else
             ERR("Unable to query DRI3. Trying DRI2 fallback (slower performance).\n");
             is_dri2_fallback = 1;
             if (!DRI2FallbackCheckSupport(dpy)) {
                 ERR("DRI2 fallback unsupported\n");
-                return D3DERR_NOTAVAILABLE;
+                is_dri2_fallback = 0;
             }
 #endif
         }
@@ -1195,19 +1252,19 @@ d3dadapter9_new( BOOL ex, Display *dpy,
         }
     }
 
-    int fd;
+    int fd = -1;
+    BOOL dri3_fail = FALSE;
+    BOOL dri2_fail = FALSE;
 #if D3DADAPTER9_WITHDRI2
     if (!is_dri2_fallback && !DRI3Open(dpy, DefaultScreen(dpy), &fd)) {
 #else
     if (!DRI3Open(dpy, DefaultScreen(dpy), &fd)) {
 #endif
-        ERR("DRI3Open failed (fd=%d)\n", fd);
-        return D3DERR_NOTAVAILABLE;
+        dri3_fail = TRUE;
     }
 #if D3DADAPTER9_WITHDRI2
     if (is_dri2_fallback && !DRI2FallbackOpen(dpy, DefaultScreen(dpy), &fd)) {
-        ERR("DRI2Open failed (fd=%d)\n", fd);
-        return D3DERR_NOTAVAILABLE;
+        dri2_fail = TRUE;
     }
 #endif
 
@@ -1221,6 +1278,10 @@ d3dadapter9_new( BOOL ex, Display *dpy,
     ID3DAdapter9* adapter = NULL;
     HRESULT hr = d3d9_drm->create_adapter(fd, &adapter);
     if (FAILED(hr)) {
+        if (dri3_fail)
+            ERR("DRI3Open failed (fd=%d)\n", fd);
+        else if (dri2_fail)
+            ERR("DRI2Open failed (fd=%d)\n", fd);
         ERR("Unable to create ID3DAdapter9 (fd=%d)\n", fd);
         return hr;
     }
