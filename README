@@ -7,3 +7,5 @@ Use nine_sdl64.so for 64bit titles (CS:GO).
 For Portal 2 (as of November 2021), add `NINE_VHACKS=1`.
 
 To use a custom nine build, set `D3D_MODULE_PATH=/path/to/d3dadapter9.so`.
+
+As of Nov 2024, Steam users must also do `Properties → Compatibility → Force the use of → Legacy runtime`
